@@ -1,5 +1,5 @@
 ---
-title: "#CN_elect\nLes communes nouvelles françaises (2012-1er janvier 2024) : une analyse au prisme des élections"
+title: "#CN_elect\nLes communes nouvelles françaises : une analyse au prisme des élections"
 author: "G. Bideau"
 date: '`r format(Sys.time(), "%d %B %Y %X")`' # %X pour rajouter l'heure
 # bibliography: biblio/biblio_elections.bib
@@ -69,13 +69,31 @@ library(lmtest) # Pour étude résidus régression linéaire
 library(arm) # Pour étude résidus logit
 ```
 
-# [Quelques résultats]
+# Objectifs du présent document
 
-- [Des communes fusionnantes orientées politiquement ? (1)] Quelle que soit la typologie réalisée (France entière, département, région, variables du 1er tour de la présidentielle, du 2e tour etc), les communes nouvelles sont sur-représentées dans certains groupes, sous-représentées dans d'autres, et ce n'est pas toujours significatif : p-value qui va de 0,5 à 2,2e-16.
+Ce document présente le détail des analyses réalisées autour de la question des liens entre orientations politiques et communes nouvelles. Les objectifs et résulats de l'étude seront développés dans un article, en cours de rédaction. **Ce script est un _document de travail_ qui a pour but, dans une logique de science ouverte, de permettre la transparence, la vérification et la reproductibilité des analyses proposées.**
 
-- [Des communes fusionnantes orientées politiquement ? (2)] Si on fait un logit en intégrant la typologie politique (issue de la CAH), le ZAU et l'appartenance au département : toutes choses égales par ailleurs quand AU ZAU et au département, la dimension politique ne paraît pas avoir d’impact significatif sur la probabilité de fusionner en Normandie. Donc pas d'effet politique ?
+Les données mises en forme seront rendues disponibles une fois l'article paru, sur la plateforme Nakala (les données initiales utilisées sont issues de la statistique publique et librement accessibles).
 
-- [Des communes nouvelles homogènes politiquement ?] Même avec des typologies à seulement 4 groupes, une large majorité des communes nouvelles sont, du point de vue de notre typologie, composées de communes au profil hétérogène. Pour Normandie, 27 (sur 169) ont une typologie identique, soit environ 16 %. Pour le Maine-et-Loire, 11 sur 39 soit 28 %. Pour un type majoritaire on monte respectivement à 35 sur 169 (20 %) et 14 sur 39 (36 %). En revanche certains groupes peuvent avoir une plus forte proportion d'homogènes. 
+Ce travail s'inscrit dans le cadre d'une étude plus générale sur les communes nouvelles :
+
+https://cv.hal.science/gabriel-bideau
+
+Ne pas hésiter à contacter l'auteur (gabriel.bideau@gmail.com) pour toute question.
+
+
+# Préparation des données
+
+
+## Choix concernant les données utilisées en fonction des différentes élections
+
+Un problème majeur se pose en lien avec la géographie administrative à laquelle les résultats sont disponibles. En effet, les résultats des élections les plus facilement exploitables sont fournis à l'échelle communale, pour les communes existant lors de l'élection en question. Cela rend difficile l'étude des communes nouvelles qui, par définition, ont engendré des changements de périmètre. Par exemple, concernant les élections de 2017, les résultats sont disponibles à l'échelle des communes existant à cette date-là, ce qui empêche de réfléchir à l'homogénéité ou l'hétérogénéité interne aux communes nouvelles. En revanche, il est toujours possible d'agréger les données disponibles uniquement pour des communes n'ayant pas fusionné au périmètre de la future commune nouvelle.
+
+Plusieurs possibilités ont été envisagées et deux ont été retenues :
+
+- Partir des données avant ou après la très grande majorité des fusions. En effet, les premières communes ont été créées en 2012 et les dernières, à l'heure où nous écrivons, au 1er janvier 2025. Cependant, leur nombre est peu important avant 2015 et après 2020. Ainsi, pour les élections précédant l'année 2014, le nombre de communes ayant fusionné étant tout à fait limité, nous avons les informations à l'échelle de la très grande majorité des communes fusionnantes. Pour les élections postérieures à l'année 2020, inversement, la très grande majorité des communes nouvelles existant aujourd'hui ont été créées, nous avons les informations pour la quasi totalité des communes nouvelles.
+    
+- Pour les élections intermédiaires, nous utilisons les données à l'échelle des bureaux de vote pour reconstituer les données à l'échelle des communes fusionnantes. Cette solution est théoriquement la meilleure mais, dans la pratique, complexe à mettre en œuvre.
 
 
 ```{r tableau_base_donnees, echo=FALSE}
@@ -92,7 +110,7 @@ kable(tableau, caption = "Les données électorales utilisées en fonction des s
 rm(l1, l2, l3, l4, tableau)
 ```
 
-
+Pour le détail de la mise en œuvre, cf. le code ci-dessous.
 
 ```{r autres_methodes_envisagees, eval=FALSE, echo=FALSE}
 
@@ -124,9 +142,6 @@ rm(l1, l2, l3, l4, tableau)
 
 ```
 
-
-
-# Préparation des données
 
 
 ## Import de la base DAC
